@@ -19,7 +19,7 @@ class ESP3 extends EventEmitter {
 
         this.parser = new ESP3Parser();
         this.serialport = new SerialPort(config.port, { baudRate: config.baudrate, autoOpen: false });
-        this.serialport.pipe(parser);
+        this.serialport.pipe(this.parser);
     }
 
     open() {
