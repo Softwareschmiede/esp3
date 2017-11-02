@@ -20,9 +20,14 @@ class ESP3 extends EventEmitter {
         this.parser = new ESP3Parser();
         this.serialport = new SerialPort(config.port, { baudRate: config.baudrate, autoOpen: false });
         this.serialport.pipe(this.parser);
+
     }
 
     open() {
+        console.log('Port will be opened');
+
+        this.emit('esp-test', 'Bla123');
+
         this.serialport.open(function (err) {
             if (err) {
                 return console.log('Error opening port: ', err.message);
@@ -30,8 +35,9 @@ class ESP3 extends EventEmitter {
         });
 
         this.parser.on('data', function(data) {
-            this.emit('data', data);
-        });
+            //console.log('Test');
+            this.emit('esp-test', 'Hallo');
+        }.bind(this));
     }
 }
 
