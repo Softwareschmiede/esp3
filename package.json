@@ -1,0 +1,26 @@
+{
+  "name": "esp3",
+  "version": "0.0.1",
+  "description": "A module for sending and receiving EnOcean Serial Protocols version 3 (ESP3).",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha ./test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Softwareschmiede/esp3.git"
+  },
+  "keywords": [
+    "EnOcean",
+    "Serial",
+    "Protocol",
+    "3",
+    "ESP3"
+  ],
+  "author": "David Spanier",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Softwareschmiede/esp3/issues"
+  },
+  "homepage": "https://github.com/Softwareschmiede/esp3#readme"
+}
