@@ -17,14 +17,21 @@ class ESP3 extends EventEmitter {
         config.sensorFile = options.sensorFile ? options.sensorFile : __dirname + '/eep/knownDevices.json';
 
 
-        const parser = new ESP3Parser();
-        const serialport = new SerialPort(config.port, { baudRate: config.baudrate });
-        serialport.pipe(parser);
+        this.parser = new ESP3Parser();
+        this.serialport = new SerialPort(config.port, { baudRate: config.baudrate, autoOpen: false });
+        this.serialport.pipe(parser);
+    }
 
-        parser.on('data', function(data) {
-            this.emit('data', data);
+    open() {
+        this.serialport.open(function (err) {
+            if (err) {
+                return console.log('Error opening port: ', err.message);
+            }
         });
 
+        this.parser.on('data', function(data) {
+            this.emit('data', data);
+        });
     }
 }
 
