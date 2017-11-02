@@ -22,5 +22,9 @@
   "bugs": {
     "url": "https://github.com/Softwareschmiede/esp3/issues"
   },
-  "homepage": "https://github.com/Softwareschmiede/esp3#readme"
+  "homepage": "https://github.com/Softwareschmiede/esp3#readme",
+  "dependencies": {
+    "esp3-parser": "0.0.6",
+    "serialport": "^6.0.4"
+  }
 }
