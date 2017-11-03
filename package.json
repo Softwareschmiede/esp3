@@ -4,7 +4,7 @@
   "description": "A module for sending and receiving EnOcean Serial Protocols version 3 (ESP3).",
   "main": "index.js",
   "scripts": {
-    "test": "mocha ./test"
+    "test": "mocha ./test/local.js"
   },
   "repository": {
     "type": "git",

@@ -1,3 +1,4 @@
+const fs = require('fs');
 const EventEmitter = require('events');
 
 const SerialPort = require('serialport');
@@ -13,12 +14,11 @@ class ESP3 extends EventEmitter {
             options = {};
         }
 
-        const config = {};
+        this.config = {};
         config.port = options.port ? options.port : '/dev/ttyAMA0';
         config.baudrate = options.baudrate ? options.baudrate : 57600;
         config.baseId = options.baseId ? options.baseId : '00000000';
-        config.sensorFile = options.sensorFile ? options.sensorFile : __dirname + '/eep/known-devices.json';
-
+        config.knownDevicesFile = options.knownDevicesFile ? __dirname + '/' + options.knownDevicesFile : __dirname + '/eep/known-devices.json';
 
         this.parser = new ESP3Parser();
         this.serialport = new SerialPort(config.port, { baudRate: config.baudrate, autoOpen: false });
@@ -31,13 +31,36 @@ class ESP3 extends EventEmitter {
             if (err) {
                 this.emit('esp-error', err);
             }
-        });
+        }.bind(this));
 
         this.parser.on('data', function(data) {
             const rawPacket = parse(data);
             const telegram = new Telegram(rawPacket.data);
 
-            this.emit('esp-data', telegram);
+            const packet = { // Set basic informations
+                senderId: rawPaket.data.senderId,
+                subTelNum: rawPaket.optionalData.subTelNum,
+                destinationId: rawPaket.optionalData.destinationId,
+                dBm: rawPaket.optionalData.dBm,
+                securityLevel: rawPaket.optionalData.securityLevel
+            };
+
+            if (telegram.learnMode) {
+                try {
+                    const knownDevices = JSON.parse(fs.readFileSync(this.config.knownDevicesFile, 'utf8'));
+
+                    if (!knownDevices.hasOwnProperty(rawPacket.data.senderId)) {
+                        knownDevices[rawPacket.data.senderId] = telegram.eep;
+                        fs.writeFileSync(this.config.knownDevicesFile, JSON.stringify(knownDevices));
+                    }
+                } catch(err) {
+                    this.emit('esp-error', err);
+                }
+            } else if (telegram.eep !== null) {
+                paket.data = telegram; // Telegram has data
+            }
+
+            this.emit('esp-data', paket);
         }.bind(this));
     }
 }
@@ -72,19 +95,6 @@ function parse(buffer) {
         senderId: rawData.toString('hex', header.dataLength - 5, header.dataLength - 1), // Size = 4 bytes
         status: rawData.toString('hex', header.dataLength - 1, header.dataLength) // Size = 1 byte
     };
-
-    // const eep = EEP(data);
-    // if (eep.learnMode) {
-    //     const eepMapper = JSON.parse(fs.readFileSync(path.join(__dirname, '/eep/eep.json'), 'utf8'));
-    //
-    //     if (!eepMapper.hasOwnProperty(data.senderId)) {
-    //         eepMapper[data.senderId] = eep.eep;
-    //
-    //         fs.writeFileSync(path.join(__dirname, '/eep/eep.json'), JSON.stringify(eepMapper));
-    //     }
-    // } else {
-    //     data.userData = eep;
-    // }
 
     const rawOptionalData = raw.slice(dataOffset + header.dataLength, dataOffset + header.dataLength + header.optionalLength); // Keep buffer reference
 

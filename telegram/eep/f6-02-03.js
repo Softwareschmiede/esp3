@@ -3,35 +3,35 @@ module.exports = function(rawUserData) {
 
     if (btn === '00') {
         return {
-            type: 'state',
+            type: 'switch',
             value: 'released'
         }
     }
 
     if (btn === '10') {
         return {
-            type: 'state',
+            type: 'switch',
             value: 'AI'
         }
     }
 
     if (btn === '30') {
         return {
-            type: 'state',
+            type: 'switch',
             value: 'A0'
         }
     }
 
     if (btn === '50') {
         return {
-            type: 'state',
+            type: 'switch',
             value: 'BI'
         }
     }
 
     if (btn === '70') {
         return {
-            type: 'state',
+            type: 'switch',
             value: 'B0'
         }
     }

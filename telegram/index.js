@@ -1,12 +1,10 @@
+const Helper = require('./helper');
 const EEP = require('./eep');
 const KnownDevices = require('./known-devices.json');
 
 class Telegram {
     constructor(data) {
         if (data.rorg === 'f6') {
-            //const t21 = parseInt(data.status, 16) << 26 >>> 31;
-            //const nu = parseInt(data.status, 16) << 27 >>> 31;
-
             return EEP['f60203'](data.rawUserData);
         }
 
@@ -37,7 +35,12 @@ class Telegram {
                 }
             } else {
                 const eep = KnownDevices[data.senderId];
-                return EEP[eep.rorg + eep.func](data.rawUserData, eep);
+
+                if (eep) {
+                    return EEP[eep.rorg + eep.func](data.rawUserData, eep);
+                } else {
+                    return {eep: null}
+                }
             }
         }
 
