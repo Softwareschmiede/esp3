@@ -1,6 +1,6 @@
 {
   "name": "esp3",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A module for sending and receiving EnOcean Serial Protocols version 3 (ESP3).",
   "main": "index.js",
   "scripts": {
