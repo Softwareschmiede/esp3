@@ -28,5 +28,8 @@ At this moment there is no fuctionality.
 The first functionality will be comming soon.
 
 ## Changes
+### 0.0.3
+Bugfix in config
+
 ### 0.0.2
 First eep added (F6-02-03)

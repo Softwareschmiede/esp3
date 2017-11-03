@@ -15,19 +15,19 @@ class ESP3 extends EventEmitter {
         }
 
         this.config = {};
-        config.port = options.port ? options.port : '/dev/ttyAMA0';
-        config.baudrate = options.baudrate ? options.baudrate : 57600;
-        config.baseId = options.baseId ? options.baseId : '00000000';
-        config.knownDevicesFile = options.knownDevicesFile ? __dirname + '/' + options.knownDevicesFile : __dirname + '/eep/known-devices.json';
+        this.config.port = options.port ? options.port : '/dev/ttyAMA0';
+        this.config.baudrate = options.baudrate ? options.baudrate : 57600;
+        this.config.baseId = options.baseId ? options.baseId : '00000000';
+        this.config.knownDevicesFile = options.knownDevicesFile ? __dirname + '/' + options.knownDevicesFile : __dirname + '/eep/known-devices.json';
 
         this.parser = new ESP3Parser();
-        this.serialport = new SerialPort(config.port, { baudRate: config.baudrate, autoOpen: false });
+        this.serialport = new SerialPort(this.config.port, { baudRate: this.config.baudrate, autoOpen: false });
         this.serialport.pipe(this.parser);
 
     }
 
     startLearnMode() {
-        
+
     }
 
     stopLearnMode() {

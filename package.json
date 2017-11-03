@@ -1,10 +1,10 @@
 {
   "name": "esp3",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A module for sending and receiving EnOcean Serial Protocols version 3 (ESP3).",
   "main": "index.js",
   "scripts": {
-    "test": "mocha ./test/local.js"
+    "test": "mocha ./test/test.js"
   },
   "repository": {
     "type": "git",
