@@ -26,6 +26,14 @@ class ESP3 extends EventEmitter {
 
     }
 
+    startLearnMode() {
+        
+    }
+
+    stopLearnMode() {
+
+    }
+
     open() {
         this.serialport.open(function (err) {
             if (err) {
