@@ -28,6 +28,10 @@ At this moment there is no fuctionality.
 The first functionality will be comming soon.
 
 ## Changes
+### 0.0.4
+New eep added (d5-00-01).
+Some little bugfixes.
+
 ### 0.0.3
 Bugfix in config
 

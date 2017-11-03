@@ -1,4 +1,4 @@
 .git
 node_modules
 .idea
-test/known-devices.json
+npm-debug.log

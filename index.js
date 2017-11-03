@@ -46,11 +46,11 @@ class ESP3 extends EventEmitter {
             const telegram = new Telegram(rawPacket.data);
 
             const packet = { // Set basic informations
-                senderId: rawPaket.data.senderId,
-                subTelNum: rawPaket.optionalData.subTelNum,
-                destinationId: rawPaket.optionalData.destinationId,
-                dBm: rawPaket.optionalData.dBm,
-                securityLevel: rawPaket.optionalData.securityLevel
+                senderId: rawPacket.data.senderId,
+                subTelNum: rawPacket.optionalData.subTelNum,
+                destinationId: rawPacket.optionalData.destinationId,
+                dBm: rawPacket.optionalData.dBm,
+                securityLevel: rawPacket.optionalData.securityLevel
             };
 
             if (telegram.learnMode) {
@@ -65,10 +65,10 @@ class ESP3 extends EventEmitter {
                     this.emit('esp-error', err);
                 }
             } else if (telegram.eep !== null) {
-                paket.data = telegram; // Telegram has data
+                packet.data = telegram; // Telegram has data
             }
 
-            this.emit('esp-data', paket);
+            this.emit('esp-data', packet);
         }.bind(this));
     }
 }
