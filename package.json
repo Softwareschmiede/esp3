@@ -4,7 +4,7 @@
   "description": "A module for sending and receiving EnOcean Serial Protocols version 3 (ESP3).",
   "main": "index.js",
   "scripts": {
-    "test": "mocha ./test/test.js"
+    "test": "mocha ./test/local.js"
   },
   "repository": {
     "type": "git",
@@ -24,6 +24,8 @@
   },
   "homepage": "https://github.com/Softwareschmiede/esp3#readme",
   "dependencies": {
+    "eep-packet": "0.0.4",
+    "esp3-packet": "0.0.5",
     "esp3-parser": "0.0.6",
     "serialport": "^6.0.4"
   }

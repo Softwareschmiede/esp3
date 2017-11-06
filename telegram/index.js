@@ -4,10 +4,12 @@ const KnownDevices = require('./known-devices.json');
 
 class Telegram {
     constructor(data) {
+        // RPS
         if (data.rorg === 'f6') {
             return EEP['f60203'](data.rawUserData);
         }
 
+        // 1BS
         if (data.rorg === 'd5') { // At this moment there is only one eep
             const learnMode = data.rawUserData.readUInt8() << 28 >>> 31; // Offset = 4, size = 1
 
@@ -18,10 +20,16 @@ class Telegram {
                 }
             } else {
                 const eep = KnownDevices[data.senderId];
-                return EEP[eep.rorg + eep.func + eep.type](data.rawUserData);
+
+                if (eep) {
+                    return EEP[eep.rorg + eep.func + eep.type](data.rawUserData);
+                } else {
+                    return {eep: null};
+                }
             }
         }
 
+        // 4BS
         if (data.rorg === 'a5') {
             const learnMode = data.rawUserData.readUInt8(3) << 28 >>> 31;
 
@@ -39,7 +47,7 @@ class Telegram {
                 if (eep) {
                     return EEP[eep.rorg + eep.func](data.rawUserData, eep);
                 } else {
-                    return {eep: null}
+                    return {eep: null};
                 }
             }
         }
