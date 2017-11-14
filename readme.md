@@ -1,9 +1,6 @@
 # ESP3
 This module sends and receives EnOcean Serial Protocols in version 3 (ESP3).
 
-## Requirements
-Serialport >= 5.0.0
-
 ## Usage
 ```javascript
 const ESP3 = require('esp3');
@@ -17,9 +14,10 @@ The default config looks like this:
 ```javascript
 {
     port: '/dev/ttyAMA0',
-    baudrate : 57600,
-    baseId : '00000000',
-    sensorFile : './eep/knownDevices.json'
+    baudrate: 57600,
+    baseId: '00000000',
+    sensorFile: './eep/knownDevices.json',
+    knownDevices: {}
 }
 ```
 
@@ -28,6 +26,10 @@ At this moment there is no fuctionality.
 The first functionality will be comming soon.
 
 ## Changes
+### 0.0.5
+Known devices module updated.
+Dependencies updated.
+
 ### 0.0.4
 New eep added (d5-00-01).
 Some little bugfixes.
