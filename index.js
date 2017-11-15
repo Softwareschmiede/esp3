@@ -20,7 +20,7 @@ class ESP3 extends EventEmitter {
         this.knownDevices = options.knownDevices ? options.knownDevices : {};
 
         this.learnMode = false;
-        
+
 
         this.parser = new ESP3Parser();
         this.serialport = new SerialPort(this.config.port, { baudRate: this.config.baudrate, autoOpen: false });
@@ -32,6 +32,7 @@ class ESP3 extends EventEmitter {
         this.addKnownDevice = this.addKnownDevice.bind(this);
         this.setKnownDevices = this.setKnownDevices.bind(this);
         this.open = this.open.bind(this);
+        this.test = this.test.bind(this);
     }
 
     startLearnMode() {
@@ -54,7 +55,7 @@ class ESP3 extends EventEmitter {
     }
 
     open() {
-        this.serialport.open(function (err) {
+        this.serialport.open(function(err) {
             if (err) {
                 this.emit('esp-error', err);
             }
@@ -65,11 +66,21 @@ class ESP3 extends EventEmitter {
 
             if (this.learnMode && eepPacket.learnMode) {
                 this.emit('new-device', eepPacket);
-            } else if (this.knownDevices.hasOwnProperty(eepPacket.data.senderId)) {
+            } else if (eepPacket.data && this.knownDevices.hasOwnProperty(eepPacket.data.senderId)) {
                 this.emit('known-device', eepPacket);
             }
-            
+
         }.bind(this));
+    }
+
+    test(buffer) {
+        const eepPacket = new EEPPacket(buffer, this.knownDevices);
+
+        if (this.learnMode && eepPacket.learnMode) {
+            this.emit('new-device', eepPacket);
+        } else if (eepPacket.data && this.knownDevices.hasOwnProperty(eepPacket.data.senderId)) {
+            this.emit('known-device', eepPacket);
+        }
     }
 }
 

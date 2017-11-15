@@ -26,6 +26,9 @@ At this moment there is no fuctionality.
 The first functionality will be comming soon.
 
 ## Changes
+### 0.0.6
+Error fixed if device is unknown.
+
 ### 0.0.5
 Known devices module updated.
 Dependencies updated.
