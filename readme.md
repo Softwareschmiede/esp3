@@ -17,7 +17,7 @@ The default config looks like this:
     baudrate: 57600,
     baseId: '00000000',
     sensorFile: './eep/knownDevices.json',
-    knownDevices: {}
+    knownDevices: []
 }
 ```
 

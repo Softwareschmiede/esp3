@@ -24,7 +24,8 @@
   },
   "homepage": "https://github.com/Softwareschmiede/esp3#readme",
   "dependencies": {
-    "eep-packet": "0.0.5",
+    "eep-packet": "0.0.7",
+    "esp3-packet": "0.0.7",
     "esp3-parser": "0.0.6",
     "serialport": "^6.0.4"
   }

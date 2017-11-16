@@ -1,85 +1,102 @@
+/*
+ *  Imports
+ */
 const EventEmitter = require('events');
 
 const SerialPort = require('serialport');
 const ESP3Parser = require('esp3-parser');
+const ESPPacket = require('esp3-packet');
 const EEPPacket = require('eep-packet');
 
+/*
+ *  Private declarations
+ */
+const _config = {};
+let _knownDevices;
+let _learnMode = false;
+let _serialport;
+let _parser;
+
+/*
+ *  Class
+ */
 class ESP3 extends EventEmitter {
     constructor(options) {
         super();
 
-        if (options === undefined) {
+        if (options === undefined || options === null) {
             options = {};
         }
 
-        this.config = {};
-        this.config.port = options.port ? options.port : '/dev/ttyAMA0';
-        this.config.baudrate = options.baudrate ? options.baudrate : 57600;
-        this.config.baseId = options.baseId ? options.baseId : '00000000';
+        _config.port = options.port ? options.port : '/dev/ttyAMA0';
+        _config.baudrate = options.baudrate ? options.baudrate : 57600;
+        _config.baseId = options.baseId ? options.baseId : '00000000';
 
-        this.knownDevices = options.knownDevices ? options.knownDevices : {};
+        _knownDevices = options.knownDevices ? options.knownDevices : [];
 
-        this.learnMode = false;
-
-
-        this.parser = new ESP3Parser();
-        this.serialport = new SerialPort(this.config.port, { baudRate: this.config.baudrate, autoOpen: false });
-        this.serialport.pipe(this.parser);
-
-        // Binding
-        this.startLearnMode = this.startLearnMode.bind(this);
-        this.stopLearnMode = this.stopLearnMode.bind(this);
-        this.addKnownDevice = this.addKnownDevice.bind(this);
-        this.setKnownDevices = this.setKnownDevices.bind(this);
-        this.open = this.open.bind(this);
-        this.test = this.test.bind(this);
+        _parser = new ESP3Parser();
+        _serialport = new SerialPort(_config.port, { baudRate: _config.baudrate, autoOpen: false });
+        _serialport.pipe(_parser);
     }
 
     startLearnMode() {
-        this.learnMode = true;
+        _learnMode = true;
     }
 
     stopLearnMode() {
-        this.learnMode = false;
+        _learnMode = false;
     }
 
     addKnownDevice(device) {
-        this.knownDevices[device.senderId] = device.eep; // Add error handling (senderId exists)
-    }
-
-    setKnownDevices(knownDevices) {
-        // Convert array to object with multiple properties
-        for (let i = 0; i < knownDevices.length; i++) {
-            this.knownDevices[knownDevices[i].senderId] = knownDevices[i].eep;
+        if (device && device.senderId && device.eep) {
+            _knownDevices.push({senderId: device.senderId, eep: device.eep}); // Add error handling (senderId exists)
+        } else {
+            throw new TypeError('Device is missing or has an invaild format.');
         }
     }
 
+    setKnownDevices(knownDevices) {
+        _knownDevices = knownDevices;
+    }
+
     open() {
-        this.serialport.open(function(err) {
+        _serialport.open(function(err) {
             if (err) {
                 this.emit('esp-error', err);
             }
         }.bind(this));
 
-        this.parser.on('data', function(buffer) {
-            const eepPacket = new EEPPacket(buffer, this.knownDevices);
+        _parser.on('data', function(buffer) {
+            const eepPacket = new EEPPacket();
+            eepPacket.setParser(new ESPPacket());
+            eepPacket.setKnownDevices(_knownDevices);
+    
+            const packet = eepPacket.parse(buffer);
 
-            if (this.learnMode && eepPacket.learnMode) {
-                this.emit('new-device', eepPacket);
-            } else if (eepPacket.data && this.knownDevices.hasOwnProperty(eepPacket.data.senderId)) {
-                this.emit('known-device', eepPacket);
+            if (_learnMode && packet && packet.learnMode) {
+                this.emit('new-device', packet);
+            } else if (packet && !packet.learnMode) {
+                this.emit('known-device', packet);
             }
 
         }.bind(this));
     }
 
-    test(buffer) {
-        const eepPacket = new EEPPacket(buffer, this.knownDevices);
+    write() {
+        //_serialport.write();
+    }
 
-        if (this.learnMode && eepPacket.learnMode) {
-            this.emit('new-device', eepPacket);
-        } else if (eepPacket.data && this.knownDevices.hasOwnProperty(eepPacket.data.senderId)) {
-            this.emit('known-device', eepPacket);
+    test(buffer) {
+        const eepPacket = new EEPPacket();
+        eepPacket.setParser(new ESPPacket());
+        eepPacket.setKnownDevices(_knownDevices);
+
+        const packet = eepPacket.parse(buffer);
+
+        if (_learnMode && packet && packet.learnMode) {
+            this.emit('new-device', packet);
+        } else if (packet && !packet.learnMode) {
+            this.emit('known-device', packet);
         }
     }
 }
