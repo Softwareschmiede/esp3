@@ -22,10 +22,12 @@ describe('test', function() {
         }
     ];
     
-    const esp = new ESP3({knownDevices: knownDevicesArray});
+    // const esp = new ESP3({knownDevices: knownDevicesArray});
+
+    const esp = new ESP3();
 
     esp.on('new-device', console.log);
     esp.on('known-device', console.log);
 
-    esp.test(buf);
+    esp.open();
 });

@@ -12,7 +12,7 @@ const EEPParser = require('eep-parser');
 /*
  *  Private declarations
  */
-var _config = null;
+const _config = {};
 var _knownDevices = null;
 var _learnMode = false;
 var _serialport = null;
@@ -29,7 +29,7 @@ class ESP3 extends EventEmitter {
             options = {};
         }
 
-        _config.port = options.port ? options.port : '/dev/ttyAMA0';
+        _config.port = options.port ? options.port : '/dev/ttyS3';
         _config.baudrate = options.baudrate ? options.baudrate : 57600;
         _config.baseId = options.baseId ? options.baseId : '00000000';
 
@@ -66,6 +66,7 @@ class ESP3 extends EventEmitter {
         });
 
         _parser.on('data', (buf) => {
+
             const eepParser = new EEPParser();
             eepParser.addDevices(_knownDevices);
     
@@ -75,6 +76,8 @@ class ESP3 extends EventEmitter {
                 this.emit('new-device', packet);
             } else if (packet && !packet.learnMode) {
                 this.emit('known-device', packet);
+            } else {
+                console.log(packet);
             }
         });
     }
@@ -83,19 +86,19 @@ class ESP3 extends EventEmitter {
         //_serialport.write();
     }
 
-    test(buffer) {
-        const eepPacket = new EEPPacket();
-        eepPacket.setParser(new ESPPacket());
-        eepPacket.setKnownDevices(_knownDevices);
-
-        const packet = eepPacket.parse(buffer);
-
-        if (_learnMode && packet && packet.learnMode) {
-            this.emit('new-device', packet);
-        } else if (packet && !packet.learnMode) {
-            this.emit('known-device', packet);
-        }
-    }
+    // test(buffer) {
+    //     const eepPacket = new EEPPacket();
+    //     eepPacket.setParser(new ESPPacket());
+    //     eepPacket.setKnownDevices(_knownDevices);
+    //
+    //     const packet = eepPacket.parse(buffer);
+    //
+    //     if (_learnMode && packet && packet.learnMode) {
+    //         this.emit('new-device', packet);
+    //     } else if (packet && !packet.learnMode) {
+    //         this.emit('known-device', packet);
+    //     }
+    // }
 }
 
 module.exports = ESP3;
